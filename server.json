@@ -1,0 +1,35 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
+  "name": "com.hushvert/mcp",
+  "description": "File conversion for AI agents: office docs to PDF, PDF to Word, large video, and LLM-ready markdown via the hushvert hosted API. Refuses browser-doable pairs and points to the free @hushvert/engine.",
+  "repository": {
+    "url": "https://github.com/hushvert/mcp",
+    "source": "github"
+  },
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "@hushvert/mcp",
+      "version": "0.1.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "HUSHVERT_API_KEY",
+          "description": "hushvert developer API key (hv_live_...), from https://hushvert.com/developers/keys",
+          "isRequired": true,
+          "isSecret": true
+        },
+        {
+          "name": "HUSHVERT_ALLOWED_DIR",
+          "description": "Optional directory jail: every file read/write must resolve under this path",
+          "isRequired": false,
+          "isSecret": false
+        }
+      ]
+    }
+  ]
+}

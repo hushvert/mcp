@@ -1,0 +1,78 @@
+{
+  "name": "@hushvert/mcp",
+  "version": "0.1.0",
+  "mcpName": "com.hushvert/mcp",
+  "description": "Model Context Protocol server for hushvert: gives an AI agent a convert_file tool over the hosted file-conversion API (office to PDF, PDF to Word, large video). Pairs a browser cannot do, billed per use.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "hushvert-mcp": "./dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "SECURITY.md",
+    "CHANGELOG.md"
+  ],
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hushvert/mcp.git"
+  },
+  "homepage": "https://hushvert.com/for-developers",
+  "bugs": {
+    "url": "https://github.com/hushvert/mcp/issues"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "claude",
+    "claude-code",
+    "cursor",
+    "ai-agent",
+    "agent-tools",
+    "file-converter",
+    "file-conversion",
+    "convert",
+    "docx-to-pdf",
+    "pdf-to-docx",
+    "office-to-pdf",
+    "video-converter",
+    "hushvert"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "lint": "eslint src tests",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "build": "node build.mjs && tsc -p tsconfig.build.json --emitDeclarationOnly",
+    "prepublishOnly": "npm run lint && npm run typecheck && npm run test && npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "esbuild": "^0.25.0",
+    "eslint": "^9",
+    "typescript": "^5",
+    "typescript-eslint": "^8",
+    "vitest": "^3"
+  }
+}
