@@ -1,3 +1,5 @@
+<p align="center"><img src="assets/logo.png" width="84" alt="hushvert" /></p>
+
 # @hushvert/mcp
 
 [![npm](https://img.shields.io/npm/v/@hushvert/mcp.svg)](https://www.npmjs.com/package/@hushvert/mcp)
