@@ -1,4 +1,4 @@
-<p align="center"><img src="assets/logo.png" width="84" alt="hushvert" /></p>
+<p align="center"><img src="https://raw.githubusercontent.com/hushvert/mcp/main/assets/logo.png" width="84" alt="hushvert" /></p>
 
 # @hushvert/mcp
 
@@ -19,13 +19,76 @@ conversions that DO run in a browser (images, HEIC, archives, audio, small video
 PDF page ops), use the free, open-source [`@hushvert/engine`](https://www.npmjs.com/package/@hushvert/engine)
 package instead - this server will refuse those and point you there.
 
+## Demo
+
+A real run in Claude Code, recorded live and not sped up: ask, and `report.pdf` is
+written next to the input. The whole turn took 23 seconds, of which the conversion
+itself was about 7.
+
+![Claude Code converting report.docx to PDF with the hushvert MCP server](https://raw.githubusercontent.com/hushvert/mcp/main/assets/demo.gif)
+
+The recording starts Claude Code with only this server loaded
+(`--strict-mcp-config`) so nothing unrelated is on screen. The tape that produced
+it is [`assets/demo.tape`](https://github.com/hushvert/mcp/blob/main/assets/demo.tape),
+if you want to reproduce it.
+
+## Claude Code can already convert files. Why this?
+
+Because it can only convert what your machine can convert, and when it cannot, it
+does not fail loudly.
+
+Ask any coding agent to turn `report.docx` into a PDF. If LibreOffice is
+installed, it will shell out to `soffice`, do a good job, and you do not need this
+server. If LibreOffice is not installed, and it is not there by default on macOS,
+on Windows, or in a typical CI image, the usual fallback is pandoc. Pandoc does
+not really convert a Word document. It reads the text into its own AST, hands that
+to LaTeX, and LaTeX typesets a new document. You get a PDF. The agent reports
+success. Nobody opens the file.
+
+Here is the same `report.docx` down both paths:
+
+![The same Word document converted by pandoc and by hushvert, side by side](https://raw.githubusercontent.com/hushvert/mcp/main/assets/fidelity.png)
+
+Same words, different document. Every font in the pandoc PDF is Latin Modern,
+LaTeX's default. The heading color is gone, the table lost its Word styling, and
+the title moved into a centered LaTeX title block. `pdffonts` on the two outputs:
+
+```
+pandoc     LMRoman17-Regular, LMRoman12-Bold, LMRoman10-Italic, ...
+hushvert   Carlito-Regular, Carlito-Bold, Carlito-Italic
+```
+
+Carlito is metric-compatible with Calibri, which is what the document actually
+asked for. Latin Modern is not.
+
+So, honestly:
+
+- **If LibreOffice is installed and your agent reaches for it, you do not need
+  this server.** That is a real answer, and it is the right one for a lot of people.
+- If it is not installed, this is one line of config instead of a 281 MB download,
+  and it behaves the same on your laptop, in CI, in a container, and on a machine
+  you are not allowed to install software on.
+- Name the tool if it matters. On a machine that had both this server and pandoc
+  available, we asked the plain way ("convert report.docx to PDF") twice: Claude
+  Code used `convert_file` once and pandoc the other time, and the two runs
+  produced the two documents above. Which tool an agent reaches for is its call,
+  not ours. "Convert report.docx to PDF with hushvert" pins it.
+
 ## Install
 
-Get an API key from your [hushvert account](https://hushvert.com/account)
-(developer section - a confirmed email is required), then add the server to your
-agent's MCP config.
+Get an API key at [hushvert.com/developers/keys](https://hushvert.com/developers/keys)
+(sign-in is a one-time email code; keys require a confirmed email), then add the
+server to your agent's MCP config.
 
-**Claude Code** (`.mcp.json` in your project, or the user config):
+**Claude Code** - one line, no file to edit:
+
+```bash
+claude mcp add hushvert -e HUSHVERT_API_KEY=hv_live_your_key_here -- npx -y @hushvert/mcp
+```
+
+**Cursor, Cline, Zed, and other MCP hosts** (or Claude Code, if you prefer a
+committed project config) - add this block to the host's MCP config
+(`.mcp.json`, `.cursor/mcp.json`, and so on):
 
 ```json
 {
@@ -39,8 +102,15 @@ agent's MCP config.
 }
 ```
 
-The same `command` / `args` / `env` block works for Cursor, Cline, Zed, and other
-MCP hosts. Then ask your agent: "convert report.docx to PDF."
+If that file is committed, do not put the key in it. Claude Code expands
+environment variables in an MCP config, so use `"HUSHVERT_API_KEY":
+"${HUSHVERT_API_KEY}"` and keep the real key in your shell. Other hosts vary;
+check yours before committing.
+
+Then ask your agent: "convert report.docx to PDF with hushvert." Naming the server
+is worth the two extra words: if your machine has a local converter, the agent may
+reach for that instead, and for office documents the result is usually worse. See
+[above](#claude-code-can-already-convert-files-why-this).
 
 ## Tools
 
