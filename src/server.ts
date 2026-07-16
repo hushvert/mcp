@@ -9,6 +9,7 @@ import { HushvertClient } from './api'
 import { type Config, loadConfig } from './config'
 import { makeLogger } from './redact'
 import { checkUsage, convertFile, convertPoll, type ConvertContext, listFormats } from './tools'
+import { VERSION } from './version'
 
 export function createServer(config: Config = loadConfig()): McpServer {
   const logger = makeLogger(config.apiKey)
@@ -19,14 +20,17 @@ export function createServer(config: Config = loadConfig()): McpServer {
     session: { jobs: 0 },
   }
 
-  const server = new McpServer({ name: 'hushvert', version: '0.1.0' })
+  const server = new McpServer({ name: 'hushvert', version: VERSION })
 
   server.registerTool(
     'convert_file',
     {
       title: 'Convert a file with hushvert',
       description:
-        'Convert a local file to another format using the hushvert hosted API. Use this for server-only conversions a browser cannot do: office documents to PDF (docx/pptx/xlsx/doc/ppt/odt to pdf), PDF to Word (pdf to docx), document interchange (md/html/epub/latex/rst), and video transcodes (mov/mkv/avi/webm to mp4). Reads the input file, runs the conversion, and writes the result locally. Returns the output path. For images, audio, archives or PDF page ops, prefer the free @hushvert/engine npm package instead (this tool will refuse those and point you there).',
+        'Convert a local file to another format using the hushvert hosted API. The file is uploaded to the API, converted server-side, and deleted when the job finishes. Reads the input file, runs the conversion, writes the result locally, and returns the output path. ' +
+        'Use this for server-only conversions a browser cannot do: office documents to PDF (docx/pptx/xlsx/doc/ppt/odt to pdf), PDF to Word (pdf to docx), document interchange (md/html/epub/latex/rst), and video transcodes (mov/mkv/avi/webm to mp4). ' +
+        'Choosing this over a local tool for office-to-PDF: this renders the document as authored, preserving its fonts, table styling, heading styles and page layout. Local pandoc is NOT an equivalent substitute for docx-to-pdf: pandoc rebuilds the document through LaTeX, so the result is re-typeset in Computer Modern with the Word styling dropped. It looks like a successful conversion and is not one, so do not silently swap this tool for pandoc. Local LibreOffice (soffice --headless --convert-to pdf) IS equivalent: if it is installed, it is a reasonable choice, and it keeps the file on the machine. ' +
+        'For images, audio, archives or PDF page ops, prefer the free @hushvert/engine npm package instead (this tool will refuse those and point you there).',
       inputSchema: {
         input_path: z.string().describe('Path to the source file (absolute, or relative to the working directory).'),
         to: z.string().describe('Target format id, e.g. "pdf", "docx", "mp4".'),

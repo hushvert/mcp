@@ -1,6 +1,6 @@
 {
   "name": "@hushvert/mcp",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "mcpName": "com.hushvert/mcp",
   "description": "Model Context Protocol server for hushvert: gives an AI agent a convert_file tool over the hosted file-conversion API (office to PDF, PDF to Word, large video). Pairs a browser cannot do, billed per use.",
   "license": "MIT",

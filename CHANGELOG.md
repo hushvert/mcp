@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.1.3
+
+- Fix: the server reported version `0.1.0` in the MCP handshake, and had done so
+  through the 0.1.1 and 0.1.2 releases. It now reports the real version, and a
+  test fails if it ever drifts from package.json again.
+- `convert_file` description: say what an agent needs in order to choose well.
+  This renders a document as authored; local pandoc rebuilds docx through LaTeX
+  and re-typesets it, which looks like a successful conversion and is not one.
+  It also states that the uploaded file is deleted when the job finishes, and
+  that a local LibreOffice is an equivalent choice that keeps the file on the
+  machine. No behavior change.
+
 ## 0.1.2
 
 - README: the Claude Code install now leads with the `claude mcp add` one-liner
